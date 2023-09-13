@@ -3,6 +3,11 @@
 
 In this section, we will take a look at kubernetes deployments
 
+Il Deployment praticamente fornisce le funzionalità di rolling update e rollback dei Pod ed è un'astrazione
+che sta sopra il ReplicaSet\ReplicationController, che a sua volta sta sopra il Pod.
+
+Il descrittore del Deployment è esattamente uguale al ReplicaSet, tranne per il kind che è Deployment
+
 #### Deployment is a kubernetes object. 
   
  ![deployment](../../images/deployment.PNG)
@@ -37,6 +42,13 @@ In this section, we will take a look at kubernetes deployments
   ```
   $ kubectl create -f deployment-definition.yaml
   ```
+  
+- E' interessante anche la parte di creare un deployment in maniera imperativa, dichiarando nome e immagine:
+  ```
+  $ kubectl create deployment <deployment-name> --image <image-name> [--replicas=<n_of_replicas] 
+  [--port=<port-to-expose]
+  ```
+
 - To see the created deployment
   ```
   $ kubectl get deployment

@@ -1,6 +1,9 @@
 # ReplicaSets
   - Take me to [Video Tutorial](https://kodekloud.com/topic/replicasets/)
 
+Il ReplicationController, sostituito poi dal ReplicaSet, serve per garantire un certo numero di repliche del Pod 
+(almeno 1, o il numero replicas)
+
 In this section, we will take a look at the below
 - Replication Controller
 - ReplicaSet
@@ -44,6 +47,10 @@ In this section, we will take a look at the below
            image: nginx
      replicas: 3
 ```
+
+In pratica quel che accade è che prendi tutta la parte di definizione del Pod sotto spec
+e lo copi sotto template. Su spec del ReplicationController, aggiungerai anche la parte del numero di repliche richieste (replicas)
+
   - To Create the replication controller
     ```
     $ kubectl create -f rc-definition.yaml
@@ -88,6 +95,17 @@ In this section, we will take a look at the below
        matchLabels:
         type: front-end
  ```
+
+#### ReplicaSet vs ReplicationController
+
+- cambia l'apiVersion
+- utilizza i selector, per garantire il numero di repliche, su tutti i Pod che matchano quelle labels.
+
+Nel caso di ReplicationController, è opzionale, e quando non fornito, assume le stesse labels di quelle fornite 
+nel template. Nel caso invece di ReplicaSet è obbligatorio.
+
+
+
 #### ReplicaSet requires a selector definition when compare to Replication Controller.
    
   - To Create the replicaset
@@ -106,6 +124,18 @@ In this section, we will take a look at the below
     ![rs1](../../images/rs1.PNG)
     
 ## Labels and Selectors
+
+E' in grado di gestire anche Pod già creati, quindi anche non creati da lui. Puoi dirgli, voglio n repliche
+di questo Pod che matcha queste label e ha questo template e li crea se non ci sono o ne garantisce 
+il numero se già presenti.
+
+Quello che possiamo fare è fondamentalmente utilizzare il matchLabels, sotto il gruppo selector, per 
+matchare i Pod con quelle labels.
+
+La parte template è necessaria, anche se i Pod esistono già, perché deve esser in grado di ricrearli se muiono.
+
+Questo meccanismo è utilizzato in tanti altri posti in k8s.
+
 #### What is the deal with Labels and Selectors? Why do we label pods and objects in kubernetes?
 
   ![labels](../../images/labels.PNG)
@@ -145,6 +175,9 @@ In this section, we will take a look at the below
   ```
   $ kubectl scale --replicas=6 -f replicaset-definition.yaml
   ```
+
+Naturalmente non modifica il file.
+
   - Third way is to use **`kubectl scale`** command with type and name
   ```
   $ kubectl scale --replicas=6 replicaset myapp-replicaset

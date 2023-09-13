@@ -25,11 +25,20 @@ In this section, we will take a look at **`Manually Scheduling`** a **`POD`** on
     ![sc1](../../images/sc1.png)
     
 ## No Scheduler
-  - You can manually assign pods to node itself. Well without a scheduler, to schedule pod is to set **`nodeName`** property in your pod definition file while creating a pod.
+  Nel caso lo scheduler in k8s non stia funzionando:
+
+  - **You can manually assign pods to node itself**. Well without a scheduler, 
+to schedule pod is to set **`nodeName`** property in your pod definition file **while creating a pod**, scrivendo
+il nome del nodo dove vuoi che il Pod venga schedulato
+  - Una volta creato, non è possibile modificarne invece il nodo
+
+Se il nodo è creato e non c'è lo scheduler per schedularlo o non ci sono sufficienti risorse, rimane in uno stato
+**Pending**
+
     
     ![sc2](../../images/sc2.PNG)
     
-  - Another way
+  - Another way, creare un Binding Object e inviare una POST alla binding API
     ```
     apiVersion: v1
     kind: Binding

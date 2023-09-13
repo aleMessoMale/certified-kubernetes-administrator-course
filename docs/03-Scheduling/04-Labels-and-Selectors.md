@@ -84,9 +84,13 @@ For services
          targetPort: 9376 
        ```
   ![lrs1](../../images/lrs1.PNG)
+
+Se durante la creazione, nel caso di ReplicaSet o Service, la sezione spec.selector.matchLabels, non coincide con le labels
+impostate nel Pod, la creazione dell'oggeto fallisce.
   
 ## Annotations
 - While labels and selectors are used to group objects, annotations are used to record other details for informative purpose.
+
     ```
     apiVersion: apps/v1
     kind: ReplicaSet

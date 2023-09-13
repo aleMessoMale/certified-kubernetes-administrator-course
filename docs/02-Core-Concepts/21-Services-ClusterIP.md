@@ -4,7 +4,11 @@
 In this section we will take a look at **`services - ClusterIP`** in kubernetes
          
 ## ClusterIP
-- In this case the service creates a **`Virtual IP`** inside the cluster to enable communication between different services such as a set of frontend servers to a set of backend servers.
+- In this case the service creates a **`Virtual IP`** inside the cluster to enable communication between different 
+services such as a set of frontend servers to a set of backend servers.
+
+Questo è logicamente necessario, perché continuamente i Pod son creati e distrutti nel Cluster, ma devono sempre
+esser raggiungibili tramite il Service
     
     ![srvc1](../../images/srvc1.PNG)
     
@@ -14,6 +18,11 @@ In this section we will take a look at **`services - ClusterIP`** in kubernetes
   ![srvc2](../../images/srvc2.PNG)
   
 #### To create a service of type ClusterIP
+
+Nella definizione del service, ricordati che port e targetPort, riguardano sempre la prospettiva del servizio, quindi
+targetPort è la porta del Pod e port è dove il service, espone la sua porta. Per linkare il service con un gruppo di Pod, 
+come sempre, utilizziamo il selector.
+
 ```
 apiVersion: v1
 kind: Service

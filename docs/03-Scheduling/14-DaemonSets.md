@@ -3,6 +3,22 @@
 
 In this section, we will take a look at DaemonSets.
 
+I Daemonset son dei descrittori, simili come struttura del descrittore, ai ReplicaSet, 
+che permettono di avere un Pod disponibile in ogni Nodo, con una ed una sola istanza. 
+**Quel che cambia è fondamentalmente il kind del descrittore.**
+
+Gli use case solitamente sono: 
+- monitoring solutions
+- log solutions
+- kube-proxy
+- networking solutions e agent in generale
+
+Per sapere quali sono i desired e current number of nodes scheduled possiamo effettuare il describe del daemonset
+
+Per crearlo non c'è il comando diretto di create, possiamo partire da un Deployment, ma forse è meglio partire da 
+quanto presente in documentazione k8s.
+
+
 #### DaemonSets are like replicasets, as it helps in to deploy multiple instances of pod. But it runs one copy of your pod on each node in your cluster.
   
   ![ds](../../images/ds.PNG)
