@@ -8,14 +8,17 @@ In this section, we will take a look at configuring configmaps in applications
   - First, create the configMaps
   - Second, Inject then into the pod.
 - There are 2 ways of creating a configmap.
-  - The Imperative way
+  - The Imperative way: 
+    - from-literal - passando i valori a raso (=key=value)
+    - from-file - passando un file di properties
+
     ```
     $ kubectl create configmap app-config --from-literal=APP_COLOR=blue --from-literal=APP_MODE=prod
     $ kubectl create configmap app-config --from-file=app_config.properties (Another way)
     ```
     ![cmi](../../images/cmi.PNG)
     
-  - The Declarative way
+  - The Declarative way - **nota che non c'è spec, ma data**: 
     
     ```
     apiVersion: v1
@@ -47,6 +50,11 @@ In this section, we will take a look at configuring configmaps in applications
    
  ## ConfigMap in Pods
  - Inject configmap in pod
+
+Ci basta aggiungere una sezione, nel container, con i valori `envFrom` e `configMapRef`, a cui segue poi ancora
+il `name`, per indicare il nome della configmap
+ - `envFrom` è una **lista**, quindi possiamo passare tutte le configmap che vogliamo, ognuna con il suo `configMapRef`
+
    ```
    apiVersion: v1
    kind: Pod
@@ -79,8 +87,43 @@ In this section, we will take a look at configuring configmaps in applications
    
  #### There are other ways to inject configuration variables into pod   
  - You can inject it as a **`Single Environment Variable`** 
+
+    ```
+      env:
+        # Define the environment variable
+        - name: SPECIAL_LEVEL_KEY
+          valueFrom:
+            configMapKeyRef:
+              # The ConfigMap containing the value you want to assign to SPECIAL_LEVEL_KEY
+              name: special-config
+              # Specify the key associated with the value
+              key: special.how
+    ```
+ - 
  - You can inject it as a file in a **`Volume`**
- 
+
+    ```
+    apiVersion: v1
+    kind: Pod
+    metadata:
+      name: dapi-test-pod
+    spec:
+      containers:
+        - name: test-container
+          image: registry.k8s.io/busybox
+          command: [ "/bin/sh", "-c", "ls /etc/config/" ]
+          volumeMounts:
+          - name: config-volume
+            mountPath: /etc/config
+      volumes:
+        - name: config-volume
+          configMap:
+            # Provide the name of the ConfigMap containing the files you want
+            # to add to the container
+            name: special-config
+      restartPolicy: Never
+     ```
+   
    ![cmp1](../../images/cmp1.PNG)
    
  #### K8s Reference Docs

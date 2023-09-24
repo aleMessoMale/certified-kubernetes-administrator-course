@@ -8,6 +8,14 @@ In this section, we will take a look at monitoring kubernetes cluster
  
 ## Heapster vs Metrics Server
 - Heapster is now deprecated and a slimmed down version was formed known as the **`metrics server`**.
+- Inoltre è pieno di tool anche di terze parti, come Elastic Stack, Datadog, Prometheus, ecc ecc
+
+- Metrics Server, memorizza i dati in memoria e non sul disco, quindi non è possibile effettuare analisi su dati
+storicizzati
+
+- Kubelet, oltre a ricevere istruzioni dall'API Server e gestire la vita dei Pod, nel nodo, ha un componente, noto
+come **cAdvisor**, che è responsabile di raccogliere le metriche dei Pod e renderle disponibili, tramite le Kubelet API
+al Metrics Server.
 
   ![hpms](../../images/hpms.PNG)
   

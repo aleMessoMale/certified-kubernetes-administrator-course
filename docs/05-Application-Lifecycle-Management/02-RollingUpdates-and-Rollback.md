@@ -5,6 +5,14 @@ In this section, we will take a look at rolling updates and rollback in a deploy
 
 ## Rollout and Versioning in a Deployment
 
+Il comando di rollout formerà una nuova revisione del Deployment (creando un nuovo ReplicaSet con dentro i Pod 
+con le nuove versioni)
+
+Questo si può vedere negli eventi del deployment (describe) o listando i replicaset durante il comando
+di rollout
+
+E' possibile effettuare anche un rollback, e in quel caso distrugge i Pod nel nuovo ReplicaSet e li ricrea nel vecchio
+
   ![rollv](../../images/rollv.PNG)
   
 ## Rollout commands
@@ -12,7 +20,8 @@ In this section, we will take a look at rolling updates and rollback in a deploy
   ```
   $ kubectl rollout status deployment/myapp-deployment
   ```
-- To see the history and revisions
+
+- To see the history and revisions del deployment
   ```
   $ kubectl rollout history deployment/myapp-deployment
   ```
@@ -21,11 +30,15 @@ In this section, we will take a look at rolling updates and rollback in a deploy
   
 ## Deployment Strategies
 - There are 2 types of deployment strategies
-  1. Recreate
+  1. Recreate -> distrugge prima tutte le versioni del Deployment e poi le ricrea tutte
+     - Application downtime
   2. RollingUpdate (Default Strategy)
-  
+     - Si distrugge una versione del Pod vecchia e se ne crea una nuova, di volta in volta, senza creare downtime
+
   ![dst](../../images/dst.PNG)
   
+    
+
 ## kubectl apply
 - To update a deployment, edit the deployment and make necessary changes and save it. Then run the below command.
   ```
@@ -86,11 +99,17 @@ In this section, we will take a look at rolling updates and rollback in a deploy
 ```
 $ kubectl create -f deployment-definition.yaml
 $ kubectl get deployments
+
+# update e modifica immagine
 $ kubectl apply -f deployment-definition.yaml
 $ kubectl set image deployment/myapp-deployment nginx=nginx:1.9.1
+
+# status dell'installazione e history relativa
 $ kubectl rollout status deployment/myapp-deployment
 $ kubectl rollout history deployment/myapp-deployment
-$ kubectl rollout undo deployment/myapp-deployment
+
+# rollback
+$ kubectl rollout undo deployment/myapp-deployment 
 ```
 
 ![sum](../../images/sum.PNG)

@@ -14,7 +14,9 @@ $ kubectl get nodes
   - First is the major version
   - Second is the minor version
   - Finally, the patch version
-  
+
+La versione non riguarda ETCD Cluster e CoreDNS che sono prodotti differenti
+
   ![mmp](../../images/mmp.PNG)
   
 #### Kubernetes follows a standard software release versioning procedure

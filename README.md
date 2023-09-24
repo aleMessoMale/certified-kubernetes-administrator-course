@@ -57,7 +57,7 @@ These are notes from the [Certified Kubernetes Administrator Course](https://kod
   - [15-Practice-Test-DaemonSets](docs/03-Scheduling/15-Practice-Test-DaemonSets.md)
   - [16-Static-Pods](docs/03-Scheduling/16-Static-Pods.md)
   - [17-Practice-Test-StaticPods](docs/03-Scheduling/17-Practice-Test-StaticPods.md)
-  - [18-Multiple-Schedulers](docs/03-Scheduling/18-Multiple-Schedulers.md)
+  - [18-Multiple-Schedulers](docs/03-Scheduling/18-Multiple-Schedulers and Scheduling Profiles.md)
   - [19-Practice-Test-Multiple-Schedulers](docs/03-Scheduling/19-Practice-Test-Multiple-Schedulers.md)
   - [20-Configuring-Kubernetes-Schedulers](docs/03-Scheduling/20-Configuring-Kubernetes-Schedulers.md)
   - [21-Download-Presentation-Deck](docs/03-Scheduling/21-Download-Presentation-Deck.md)

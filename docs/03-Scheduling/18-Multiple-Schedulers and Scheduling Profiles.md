@@ -87,7 +87,25 @@ gestito tramite lo scheduler y.
   $ kubectl logs my-custom-scheduler -n kube-system
   ```
   ![cs2](../../images/cs2.PNG)
+
+## Configuring Scheduler Profiles
+
+Fondamentalmente, vedendo la lezione relativa, quel che accade è che esistono diverse fasi durante la parte di 
+scheduling.
+- Scheduling Queue -> tutti i Pod schedulabili son messi qua
+- Filtering -> vengono filtrati i nodi in svariati modi (p.es. tramite taint, risorse disponibili ecc ecc)
+- Scoring -> ai nodi rimasti, viene dato un valore e si ordinano (tendenzialmente in funzione delle risorse
+che rimangono dopo che il Pod è stato schedulato sopra)
+- Binding -> legame al nodo del Pod
+
+Ognuna di queste fasi è costituita da una certa quantità di plugin ed in generale, il funzionamento dello scheduler
+è a plugin
+
+Quel che accade è che tu puoi creare dei profili dello scheduler, nel file yaml di configurazione relativa, 
+dove fondamentalmente per ogni fase, definisci cosa tenere attivo o cosa no (anche tutto con *) e naturalmente
+è anche possibile creare un plugin ad hoc per determinate parti ad abilitarlo per una determinata fase, ecc ecc
   
 #### K8s Reference Docs
 - https://kubernetes.io/docs/tasks/extend-kubernetes/configure-multiple-schedulers/
-  
+
+

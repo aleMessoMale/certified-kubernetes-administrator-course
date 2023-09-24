@@ -38,6 +38,9 @@ Lets now take a look to create a nginx pod using **`kubectl`**.
   ```
   $ kubectl get pods
   ```
+  
+Quando fai describe del Pod, con vari container o in generale, vedrai lo stato dei container e vedrai in particolare:
+- Lo stato, la Reason (COMPLETED, ERROR, ecc, ecc) e l'Exit Code
 
  ![kubectl](../../images/kubectl.PNG)
 
