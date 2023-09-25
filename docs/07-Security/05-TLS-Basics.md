@@ -77,10 +77,10 @@ ed è per questo che, quando poi navighiamo con il browser, vede che è emesso e
 una CA e quindi è come se non fosse valido.
 
 Di base per trustare una CA, e quindi dire che il certificato è valido, è necessario che il browser abbia la relativa 
-chiave pubblica. Le chiavi pubbliche delle principali CA son builtin nel browser e permettono al browser di verificare
+chiave pubblica (ca.crt). Le chiavi pubbliche delle principali CA son builtin nel browser e permettono al browser di verificare
 che il certificato è stato firmato realmente da quella CA, questo è il motivo per cui se creiamo un certificato
 tramite una private CA (Vodafone Internal), è necessario aggiungere la chiave pubblica della CA al browser.
-  
+ 
   ![cert7](../../images/cert7.PNG)
   
 #### How do you generate legitimate certificate? How do you get your certificates singed by someone with authority?
@@ -109,7 +109,7 @@ criptata con la chiave pubblica
 - da la in avanti le comunicazioni sono criptate e decriptate utilizzando la chiave simmetrica
 
 Se il server vuole esser sicuro dell'identità del client, effettua quella che viene chiamata mutua autenticazione,
-dove in pratica anche il client ha un certificato o coppia di chiave pubblica\privata e il server trusta il client.
+dove in pratica anche il client ha un certificato client e il server agisce da client.
 
 
    

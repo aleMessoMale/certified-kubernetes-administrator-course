@@ -5,6 +5,7 @@ In this section, we will take a look at TLS certificate creation in kubernetes
 
 ## Generate Certificates
 - There are different tools available such as easyrsa, openssl or cfssl etc. or many others for generating certificates.
+- Noi utilizzeremo openssl
 
 ## Certificate Authority (CA)
 
@@ -12,7 +13,7 @@ In this section, we will take a look at TLS certificate creation in kubernetes
   ```
   $ openssl genrsa -out ca.key 2048
   ```
-- Generate CSR
+- Generate CSR (Certificate Signin Request)
   ```
   $ openssl req -new -key ca.key -subj "/CN=KUBERNETES-CA" -out ca.csr
   ```
@@ -30,8 +31,8 @@ In this section, we will take a look at TLS certificate creation in kubernetes
 - Generate Keys
   ```
   $ openssl genrsa -out admin.key 2048
-  ```
-- Generate CSR
+  ``` 
+- Generate CSR (Certificate Signin Request)
   ```
   $ openssl req -new -key admin.key -subj "/CN=kube-admin" -out admin.csr
   ```
