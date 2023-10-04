@@ -9,20 +9,36 @@ In this section, we will take a look at kubeconfig in kubernetes
 
   ![kc1](../../images/kc1.PNG)
   
-- We can move these information to a configuration file called kubeconfig. And the specify this file as the kubeconfig option in the command.
+- We can move these information to a configuration file called kubeconfig. And then specify this file as the kubeconfig 
+option in the command.
   ```
   $ kubectl get pods --kubeconfig config
   ```
   
+Di default va su un file in $HOME/.kube/config
+  
 ## Kubeconfig File
 - The kubeconfig file has 3 sections
-  - Clusters
-  - Contexts
-  - USers
+  - Clusters -> i diversi clusters k8s a cui hai accesso, con nome e riferimento alla CA del cluster e all'API a cui 
+  risponde. Ha un campo per definire il namespace di default
+  - Users -> account con cui hai accesso ai clusters, con differenti privilegi chiaramente. Oltre all'utente, hai i 
+  riferimenti alla chiave e al certificato dell'utente
+  - Contexts -> definisce che utenti accedono a quali clusters.
+
+Un campo definisce il current-context
+
+Naturalmente non stiamo creando nulla nel cluster, stiamo solo dando in pasto un file di configurazione al kubectl
+per accedere con un certo utente (già esistente sul cluster) ad un certo cluster.
   
   ![kc4](../../images/kc4.PNG)
   
   ![kc5](../../images/kc5.PNG)
+
+- Il contesto attuale è associato al valore current-context del file ed è modificabile con un comando ad hoc
+
+  ```
+  $ kubectl config use-context <context-name>
+  ```
   
 - To view the current file being used
   ```
@@ -30,7 +46,7 @@ In this section, we will take a look at kubeconfig in kubernetes
   ```
 - You can specify the kubeconfig file with kubectl config view with "--kubeconfig" flag
   ```
-  $ kubectl config veiw --kubeconfig=my-custom-config
+  $ kubectl config view --kubeconfig=my-custom-config
   ```
   
   ![kc6](../../images/kc6.PNG)

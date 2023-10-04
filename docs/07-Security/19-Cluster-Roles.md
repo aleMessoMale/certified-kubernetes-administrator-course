@@ -60,7 +60,13 @@ In this section, we will take a look at cluster roles
   
  ![cr1](../../images/cr1.PNG)
   
-- You can create a cluster role for namespace resources as well. When you do that user will have access to these resources across all namespaces.
+- **You can create a cluster role for namespace resources as well. 
+When you do that user will have access to these resources across all namespaces**.
+
+Se io creo un ClusterRole che dice che puoi fare il get dei Pod, se un utente con un ClusterRoleBinding, assume quel ruolo, 
+non c'è modo di dire che vede i Pod di un solo namespace, ma li vede di tutti i namespace, quindi in quel senso, 
+io posso creare ClusterRole anche associati a risorse non namespaced, ma in quel caso, la visibilità è su tutti i 
+namespaces
 
 #### K8s Reference Docs
 - https://kubernetes.io/docs/reference/access-authn-authz/rbac/#role-and-clusterrole

@@ -7,17 +7,20 @@ In this section, we will take a look at API Groups in kubernetes
 
  ![api3](../../images/api3.PNG)
  
-- The kubernetes API is grouped into multiple such groups based on their purpose. Such as one for **`APIs`**, one for **`healthz`**, **`metrics`** and **`logs`** etc.
+- The kubernetes API is grouped into multiple such groups based on their purpose. Such as one for **`APIs`**, 
+one for **`healthz`**, **`metrics`** and **`logs`** etc.
 
   ![api4](../../images/api4.PNG)
  
-## API and APIs
-- These APIs are catagorized into two.
-  - The core group - Where all the functionality exists
+## API and APIs - the one responbile for the cluster functionalities
+
+- Quelle responsabili per le funzionalità del cluster are catagorized into two:
+  - The core group - Where all the core functionality exists
     
     ![api5](../../images/api5.PNG)
  
   - The Named group - More organized and going forward all the newer features are going to be made available to these named groups.
+  - Quelle sopra sono Api Group, quelle sotto Risorse di quell'API Group, su cui si applicano determinati verbi
   
     ![api6](../../images/api6.PNG)
     
@@ -30,11 +33,16 @@ In this section, we will take a look at API Groups in kubernetes
 
   ![api8](../../images/api8.PNG)
   
-- An alternate is to start a **`kubeproxy`** client
+- An alternate is to start a **`kubeproxy`** client. In questo caso, il proxy recupera le credenziali dal kubeconfig,
+dove sono specificate, e le passa all'api-server
   
   ![api9](../../images/api9.PNG)
   
 ## kube proxy vs kubectl proxy
+
+- Kube proxy è in grado di fornire connettività fra differenti Pod e servizi su differenti Nodi, essendo mutua autenticazione, 
+aggiunge la parte di certificati e chiavi
+- Kubectl proxy al contrario, è un server HTTP, creato da kubectl, per accedere l'HTTP server di api-server
  
   ![kp](../../images/kp.PNG)
   

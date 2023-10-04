@@ -4,22 +4,36 @@
 In this section, we will take a look at RBAC
 
 ## How do we create a role?
-- Each role has 3 sections
-  - apiGroups
+- Each rule in the k8s `Role` descriptor has 3 sections (sono una lista):
+  - apiGroups (per core group, puoi lasciarlo bianco, altrimenti devi specificare l'API Group Name)
   - resources
   - verbs
 - create the role with kubectl command
   ```
   $ kubectl create -f developer-role.yaml
   ```
+  
+- si possono creare anche in maniera imperativa, forse più veloce: 
+  ```
+  $ kubectl create role <role-name> --verb=<verb1>,<verb2> --resource=<resource1>,<resource2>
+  ```
 
-## The next step is to link the user to that role.
+## The next step is to link the user to that role
+
 - For this we create another object called **`RoleBinding`**. This role binding object links a user object to a role.
 - create the role binding using kubectl command
   ```
   $ kubectl create -f devuser-developer-binding.yaml
   ```
-- Also note that the roles and role bindings fall under the scope of namespace.
+- Also note that the roles and role bindings fall under the scope of namespace, come vedi, il role binding, lega
+lo user al role
+
+- **Se si vuole limitare il namespace in cui quell'utente può avere quel ruolo**, aggiungi il campo namespace ai metadata
+del manifest k8s del RoleBindig object
+
+- **Se si vuole limitare la risorsa a cui può accedere, quindi non solo la tipologia, nel Ruolo, utilizza la property 
+resourceNames**
+
   ```
   apiVersion: rbac.authorization.k8s.io/v1
   kind: Role
@@ -50,6 +64,10 @@ In this section, we will take a look at RBAC
   ![rbac1](../../images/rbac1.PNG)
   
 
+- si possono creare i RoleBinding anche in maniera imperativa, forse più veloce: 
+  ```
+  $ kubectl create rolebinding <rolebinding-name> --role=<verb1>,<verb2> --user=<resource1>,<resource2>
+  
 ## View RBAC
   
 - To list roles
@@ -93,7 +111,11 @@ In this section, we will take a look at RBAC
   ![rbac5](../../images/rbac5.PNG)
   
 ## Resource Names
-- Note on resource names we just saw how you can provide access to users for resources like pods within the namespace.
+- Note on resource names we just saw how you can provide access to users for resources like pods within the namespace,
+ossia diciamo che questo ruolo può interagire con i Pod, ma solo con un certo nome
+
+
+
   ```
   apiVersion: rbac.authorization.k8s.io/v1
   kind: Role
