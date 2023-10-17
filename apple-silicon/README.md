@@ -88,6 +88,12 @@ Connect to each VM in turn, and run the following:
     sudo sysctl --system
     ```
 
+
+
+## Da qua inizia l'installazione vera e propria mi sa, considera che devia, perché si parla di Mac, ma poco cambia
+## è la sequenza che conta, che trovi poi nella DOC
+
+
 ### Step 3 - Set up Container Runtime (containerd)
 
 Here we deviate slightly from the lecture. Using the default version of `containerd` that is provided by `apt-get install` results in a cluster with crashlooping pods, so we install a version that works by downloading directly from their github site.

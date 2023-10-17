@@ -21,6 +21,9 @@ In this section we will take a look at image security
   ![img2](../../images/img2.PNG)
   
 # Private Registry
+
+Nel caso in cui l'immagine è hostata su un registry privato, è necessario prima loggarsi sul registry
+
 - To login to the registry
   ```
   $ docker login private-registry.io
@@ -32,7 +35,9 @@ In this section we will take a look at image security
   
   ![prvr](../../images/prvr.PNG)
   
-- To pass the credentials to the docker untaged on the worker node for that we first create a secret object with credentials in it.
+- To pass the credentials to the docker untaged on the worker node for that we first create a secret object with 
+credentials in it. La tipologia di secret è `docker-registry`
+
   ```
   $ kubectl create secret docker-registry regcred \
     --docker-server=private-registry.io \ 
@@ -40,7 +45,7 @@ In this section we will take a look at image security
     --docker-password=registry-password \
     --docker-email=registry-user@org.com
   ```
-- We then specify the secret inside our pod definition file under the imagePullSecret section 
+- We then specify the secret inside our pod definition file under the `imagePullSecret` section 
   ```
   apiVersion: v1
   kind: Pod

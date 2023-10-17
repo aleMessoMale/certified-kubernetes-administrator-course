@@ -2,7 +2,14 @@
   
   - Take me to [Lecture](https://kodekloud.com/topic/cni-weave/)
 
-In this section, we will take a look at "CNI Weave in the Kubernetes Cluster"
+In this section, we will take a look at "CNI Weave in the Kubernetes Cluster", uno dei plugins disponibili
+
+una volta che impariamo ad installarne uno, andiamo bene per tutti
+
+Weave è installato in ogni nodo, un agent daemonset o tramite service, e si occupa che ogni container sia in grado di raggiungere  
+l'agent del suo nodo e quindi l'agent è in grado di raggiungere gli altri Pod nei vari nodi.
+
+
 
 ## Deploy Weave
 

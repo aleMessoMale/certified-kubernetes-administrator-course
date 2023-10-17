@@ -4,6 +4,8 @@
 
 If you have an Apple M1 or M2 (Apple Silicon) machine, then please follow the separate instructions [here](../../apple-silicon/README.md).
 
+
+
 # Solutions for practice test - Install Using Kubeadm
 
   1. Install the kubeadm, kubelet and kubectl packages at exact version 1.24.0 on the controlplane and node01.

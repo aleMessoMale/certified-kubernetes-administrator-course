@@ -2,8 +2,27 @@
 
   - Take me to [Lecture](https://kodekloud.com/topic/prerequsite-cni/)
 
-In this section, we will take a look at **Pre-requisite Container Network Interface(CNI)**
 
+
+Quello che abbiamo visto finora, son queste fasi: 
+
+![img.png](../../images/network-namespaces-summary.png)
+
+Ogni sistema che implementa una network solution, deve risolvere le stesse problematiche ed è per questo che è
+stata definita una CNI che definisce una serie di responsabilità per i container runtime e i plugins.
+
+![img.png](../../images/runtime-and-plugins-resp.png)
+
+I Container Runtime sono p.es. RKT, Docker, i plugins son la parte dove le parti comuni son implementate. 
+Alla creazione del container, nel Container Runtime, chiamo l'add del modulo plugins, p.es., idem per la 
+delete ecc ecc.
+
+Ogni runtime dovrebbe esser in grado di esser eseguito con ogni plugin.
+
+P.es. RKT è un runtime, Bridge è un plugin.
+Docker non rispetta CNI.
+
+All'esame, è possibile che si chieda di installare un network plugins.
 
 ![net-7](../../images/net7.PNG)
 

@@ -38,8 +38,10 @@ La location di default dove è montato il secret è `/var/run/secrets/kubernetes
 
 ## Impostazione service account sul Pod
 
-Per impostare il service account su un Pod, è necessario impostare il valore `spec.serviceAccount'. Questa operazione
-non si può fare a caldo e perché sia effettiva, è necessario distruggere e ricreare il Pod
+Per impostare il service account su un Pod o su un Deployment, è necessario impostare il valore `spec.serviceAccount'. 
+
+Questa operazione non si può fare a caldo e perché sia effettiva, è necessario distruggere e ricreare il Pod
+Naturalmente, nel caso del Deployment, è necessario aggiungere in `spec.template.serviceAccount`.
 
 Quando si imposta un nuovo serviceAccount, automaticamente, a meno di specificare `automountServiceAccountToken` a false,
 viene montanto il secret come volume nel Pod.
@@ -73,5 +75,5 @@ Si crea tramite il comando:
 k create token <service-account-name>
 ```
 
-che ne printa anche il base64 del token, con logicamente una expire date (default 1 ora)
+che ne printa anche il token (già pronto), con una expire date (default 1 ora)
 

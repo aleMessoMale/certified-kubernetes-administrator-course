@@ -4,7 +4,37 @@
 
 In this section, we will take a look at **DNS in the Kubernetes Cluster**
 
+In questa lezione vediamo la parte di risoluzione DNS nel cluster
+
+k8s deploya un DNS Server di default, quando imposti un cluster.
+
+In generale vediamo Pod DNS Record e Service DNS Record nel DNS Server installato di default nel cluster k8s.
+
+Come sappiamo ogni Pod può raggiungere ogni altro Pod, è un requisito della soluzione di networking.
+
+Quando creiamo un service, k8s stesso aggiunge il record A per risolvere il nome del servizio, quindi all'interno
+del cluster, essendo un servizio ClusterIP, ogni Pod può raggiungerlo.
+
+Se vogliamo raggiungerlo da un altro namespace, dobbiamo aggiungere anche il suffisso del namespace.
+
+- service: `web-service`
+- namespace: `apps`
+- DNS service name: `web-service.apps`
+
+Inoltre, all'interno del root domain `cluster.local`, abbiamo il sottodominio `svc` per i servizi e `pod` per i Pod.
+
+quindi: 
+
+- `<service-name>.<namespace>.svc.cluster.local` è l'FQDN del servizio
+
+Nel caso dei Pod, i nomi non son aggiunti di default nei DNS, ma se impostati, son ottenuti sostituendo i
+'.' con i '-' nell'indirizzo IP
+
+- `10-244-2-5.<namespace>.pod.cluster.local` è l'FQDN del Pod
+
+
 ## Pod DNS Record
+
 
 - The following DNS resolution:
 
@@ -26,7 +56,7 @@ $ kubectl create ns apps
 $ kubectl run nginx --image=nginx --namespace apps
 
 # To get the additional information of the Pod in the namespace "apps"
-$ kubectl get po -n apps -owide
+$ kubectl get po -n apps -o wide
 NAME    READY   STATUS    RESTARTS   AGE   IP           NODE     NOMINATED NODE   READINESS GATES
 nginx   1/1     Running   0          99s   10.244.1.3   node01   <none>           <none>
 

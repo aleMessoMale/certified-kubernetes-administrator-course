@@ -82,9 +82,40 @@ Docker is no longer supported as a container driver. Instead we will install the
 
     </details>
 
+## Da qua sembra partire la parte di installazione vera e propria: 
+- parti da https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/
+  - setup nodo:
+    - https://kubernetes.io/docs/setup/production-environment/container-runtimes/#forwarding-ipv4-and-letting-iptables-see-bridged-traffic
+  - installazione container runtime (containerd p.es.)
+    - https://kubernetes.io/docs/setup/production-environment/container-runtimes/
+  - installazione driver cgroup, ossia cgroupfs o systemd (deve esser uguale per kubelet e containerd), meglio systemd
+    - verifica quello utilizzato con `ps -p 1`
+    - impostalo su containerd così: https://kubernetes.io/docs/setup/production-environment/container-runtimes/#containerd-systemd
+
+- A questo punto abbiamo setuppato il nodo e installato e impostato il container runtime e 
+possiamo proseguire ad installare kubeadm, kubelet e kubectl:
+  - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/install-kubeadm/#installing-kubeadm-kubelet-and-kubectl
+- Proseguiamo quindi con l'inizializzazione dei nodi della control-plane: 
+  - https://kubernetes.io/docs/setup/production-environment/tools/kubeadm/create-cluster-kubeadm/#initializing-your-control-plane-node
+  - eseguiamo gli step 2 e 4 (il 3 non c'è bisogno, containerd viene rilevato automaticamente) che si limita fondamentalmente
+  a chiamare `sudo kubeadm init` con i due parametri di pod network e api-server, solo nei master node
+    - 2. inizializzazione della Pod Network p.es. 10.244.0.0/16
+    - 4. passaggio dell'indirizzo dell'api-server 
+    - Impostiamo il default kubeconfig file, prendendo i comandi indicati alla fine del comando di init, sempre
+    sul master, per permetterci di connetterci all'api server dal master
+    - Copiati anche il comando di join, che ti incolla al fondo, da eseguire poi sui vari worker per aggiungerli
+    al master
+- Installiamo quindi una network solutions sui 3 nodi (master e worker) qua utilizza weave, forse non esiste più:
+  - https://kubernetes.io/docs/concepts/cluster-administration/addons/
+  - da qua utilizzando i comandi `kubectl` iniziamo a vedere i Pod della controlplane, incluso il daemonset di weave
+  - non vediamo nulla dei worker, perché non li abbiamo ancora joinati
+- Join dei worker nodes:
+  - esegui sui vari worker il comando di `join` che era presente al fondo di `kubeadm init` 
+
 1. Initialize the nodes.
 
-    The following steps must be performed on each of the three nodes, so `ssh` to `kubemaster` and run the steps, then to `kubenode01`, then to `kubenode02`
+    The following steps must be performed on each of the three nodes, so `ssh` to `kubemaster` and run the steps, 
+then to `kubenode01`, then to `kubenode02`
 
       1. Configure kernel parameters
 
@@ -106,7 +137,7 @@ Docker is no longer supported as a container driver. Instead we will install the
             }
             ```
 
-    1. Install `containerd` container driver and associated tooling
+    1. Install `containerd` container driver and associated tooling 
 
         <details>
 
@@ -126,16 +157,22 @@ Docker is no longer supported as a container driver. Instead we will install the
         }
         ```
 
-    1. Install Kubernetes software
+       ```bash
+          systemctl status containerd 
+        ```
+
+    1. Install Kubernetes software (kubelet, kudadm, kubectl)
 
         <details>
         This will install the latest version
 
         ```bash
         {
-        sudo  curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+        sudo  curl -fsSLo /usr/share/keyrings/kubernetes-archive-keyring.gpg 
+       https://packages.cloud.google.com/apt/doc/apt-key.gpg
 
-        echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.
+        echo "deb [signed-by=/usr/share/keyrings/kubernetes-archive-keyring.gpg] 
+       https://apt.kubernetes.io/ kubernetes-xenial main" | sudo tee /etc/apt/sources.
 
         sudo apt update
 
@@ -221,7 +258,8 @@ Docker is no longer supported as a container driver. Instead we will install the
 
     <details>
 
-    The following steps must be performed on both worker nodes, so `ssh` to `kubenode01` and run the steps, then to `kubenode02`
+    The following steps must be performed on both worker nodes, so `ssh` to `kubenode01` and run the steps, 
+then to `kubenode02`
 
     * Paste the `kubeadm join` command from above step to the command prompt and enter it.
 

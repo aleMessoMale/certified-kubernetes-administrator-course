@@ -4,8 +4,10 @@
 
 In this section, we will take a look at **Storage Class**
 
-- We discussed about how to create Persistent Volume and Persistent Volume Claim and We also saw that how to use into the Pod's volume to claim that volume space.
-- We created Persistent Volume but before this if we are taking a volume from Cloud providers like GCP, AWS, Azure. We need to first create disk in the Google Cloud as an example. 
+- We discussed about how to create Persistent Volume and Persistent Volume Claim and
+We also saw that how to use into the Pod's volume to claim that volume space.
+- We created Persistent Volume but before this if we are taking a volume 
+from Cloud providers like GCP, AWS, Azure. We need to first create disk in the Google Cloud as an example. 
 - We need to create manually each time when we define in the Pod definition file. that's called **Static Provisioning**. 
 
 #### Static Provisioning
@@ -17,7 +19,19 @@ In this section, we will take a look at **Storage Class**
 
 ![class-19](../../images/class19.PNG)
 
-- No we have a Storage Class, So we no longer to define Persistent Volume. It will create automatically when a Storage Class is created. It's called **Dynamic Provisioning**. 
+- Now we have a Storage Class, So we no longer to define Persistent Volume. 
+It will create automatically when a Storage Class is created. It's called **Dynamic Provisioning**. 
+
+**Questo avviene attraverso l'utilizzo di storage classes, che ci evita di creare i PersistentVolume,
+che al contrario sono provisionati automaticamente per noi dal cloud provider**
+
+Per far si che ci evitiamo la creazione dello PersistentVolume, quel che facciamo è **specificare 
+nel PersistentVolumeClaim la StorageClass attraverso la property `storageClassName`** dove specifichiamo
+il valore presente su `metadata.name` presente sul manifest `StorageClass`
+
+Possibile passare ulteriori parametri, differenti a seconda della StorageClass.
+
+`kubernetes.io/no-provisioner` è la StorageClass che non supporta dynamic provisioning
 
 ```
 sc-definition.yaml

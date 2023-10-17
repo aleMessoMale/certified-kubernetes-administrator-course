@@ -7,6 +7,7 @@ In this section, we will take a look at **Docker Networking**
 ## None Network
 
 - Running docker container with `none` network
+- il container è isolato e non può raggiungere il mondo esterno e non può esser raggiunto dall'esterno
 
 ```
 $ docker run --network none nginx
@@ -15,6 +16,7 @@ $ docker run --network none nginx
 ## Host Network
 
 - Running docker container with `host` network
+- il container è collegato alla rete host, non c'è isolation fra host e container
 
 ```
 $ docker run --network host nginx
@@ -23,12 +25,21 @@ $ docker run --network host nginx
 ## Bridge Network
 
 - Running docker container with `bridge` network
+- In questo caso è creato un bridge (internal private network) a cui il container e il docker host si legano
+  - i container hanno un indirizzo su quella rete (172.17.0.1 p.es.)
+  - questa è la tipologia di rete creata da docker
+
+
 
 ```
 $ docker run --network bridge nginx
 ```
 
+
+
 ## List the Docker Network
+
+Eseguendo questo comando sul tuo mac, con docker che gira, ci son queste 3 reti, appunto...
 
 ```
 $ docker network ls
@@ -55,6 +66,8 @@ $ ip link show docker0
 $ ip link add docker0 type bridge
 ```
 
+In pratica aggiungiamo l'interfaccia docker0 alla rete bridge
+
 ## To view the IP Addr of the interface docker0
 
 ```
@@ -75,41 +88,57 @@ $ docker run nginx
 
 ## To list the Network Namespace
 
+Quando creaiamo un container, **Docker crea una network interface per il container**
+, per listarle, possiamo usare il comando `ip netns`.
+
+Successivamente, docker attacca il container (o il network namespace) alla rete bridge facendo come
+abbiamo già detto nella scorsa lezione (tramite virtual cable) e associa un indirizzo IP all'interfaccia
+lato container
+
+Questo viene fatto per ogni container, permettendo ai vari container di comunicare fra loro, essendo tutti
+parte della rete bridge
+
 ```
 $ ip netns
 1c452d473e2a (id: 2)
 db732004aa9b (id: 1)
 04acb487a641 (id: 0)
 default
+```
 
 # Inspect the Docker Container
 
+```
 $ docker inspect <container-id>
+```
 
 # To view the interface attached with the local bridge docker0
-
+```
 $ ip link
 3: docker0: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
     link/ether 02:42:c8:3a:ea:67 brd ff:ff:ff:ff:ff:ff
 5: vetha3e33331@if3: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue master docker0 state UP mode DEFAULT group default
     link/ether e2:b2:ad:c9:8b:98 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-
-# with -n options with the network namespace to view the other end of the interface
-
+```
+with -n options with the network namespace to view the other end of the interface (che è l'interfaccia del container,
+quindi in pratica il container, o la relativa net interface, è connessa alla rete brige)
+```
 $ ip -n 04acb487a641 link
 1: lo: <LOOPBACK,UP,LOWER_UP> mtu 65536 qdisc noqueue state UNKNOWN mode DEFAULT group default qlen 1000
     link/loopback 00:00:00:00:00:00 brd 00:00:00:00:00:00
 3: eth0@if5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP mode DEFAULT group default
     link/ether c6:f3:ca:12:5e:74 brd ff:ff:ff:ff:ff:ff link-netnsid 0
-
+```
 # To view the IP Addr assigned to this interface 
-
+```
 $ ip -n 04acb487a641 addr
 3: eth0@if5: <BROADCAST,MULTICAST,UP,LOWER_UP> mtu 1500 qdisc noqueue state UP group default
     link/ether c6:f3:ca:12:5e:74 brd ff:ff:ff:ff:ff:ff link-netnsid 0
     inet 10.244.0.2/24 scope global eth0
        valid_lft forever preferred_lft forever
 ```
+
+Questo viene fatto ad ogni creazione del container
 
 ## Port Mapping
 
@@ -136,7 +165,10 @@ HTTP/1.1 200 OK
 Server: nginx/1.19.2
 ```
 
-- Port Mapping to docker container
+- Port Mapping to docker container, quindi con l'opzione -p
+Docker effettua questo, creando una regola di NAT, nella sua routing table, dicendo
+che il traffico che gli arriva sulla porta 8080 dell'interfaccia dell'host, 
+lo rimanda sulla porta 80 dell'intefaccia del container
 
 ```
 $ docker run -itd --name nginx -p 8080:80 nginx

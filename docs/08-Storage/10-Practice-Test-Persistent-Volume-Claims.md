@@ -1,4 +1,5 @@
 # Practice Test - Persistent Volume Claims
+ - TODO: rifallo magari prima dell'esame
 
   - Take me to [Practice Test](https://kodekloud.com/topic/practice-test-persistent-volume-claims/)
 

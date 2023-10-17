@@ -4,6 +4,17 @@
 
 In this section, we will take a look at **CoreDNS in the Kubernetes**
 
+ossia vediamo come k8s implementa i DNS Service.
+
+Ad oggi il server DNS suggerito per k8s si chiama CoreDNS ed è deployato come Pod nel kube-system namespace
+con il nome kube-dns.
+Esegue un eseguibile, che sarebbe lo stesso che eseguiremmo se dovessimo eseguire installare noi CoreDNS
+come servizio.
+
+E' il core DNS che inserisce i record A ogni volta che viene creato un Pod o un service.
+Il kubelet invece gestisce il resolv.conf nel Pod, per farlo puntare al server DNS cosìccome la riga 
+search per far risolvere i servizi anche senza root-domain o subdomain vari. Questo vale solo per i servizi,
+se vogliamo risolvere i Pod, dobbiamo utilizzare l'fqdn.
 
 ## To view the Pod
 
@@ -31,6 +42,8 @@ coredns                              1      52m
 ```
 
 ## CoreDNS Configuration File
+
+Se installato come service, il file si trova su `/etc/coredns/Corefile`
 
 ```
 $ kubectl describe cm coredns -n kube-system

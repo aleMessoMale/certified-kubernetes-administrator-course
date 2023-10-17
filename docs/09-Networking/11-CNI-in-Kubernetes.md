@@ -6,6 +6,8 @@ In this section, we will take a look at **Container Networking Interface (CNI) i
 
 ## Configuring CNI
 
+Il CNI Plugin è impostato nei parametri del kubelet
+
 ![net-1](../../images/net1.PNG)
 
 
@@ -30,9 +32,9 @@ $ ls /opt/cni/bin
 
 ```
 
-## Check the CNI Plugins
+## Check the CNI Plugins Configurations
 
-- To check the cni plugins which kubelet needs to be used.
+- To check the cni plugins which kubelet needs to be used (questa è la cartella delle varie configurazioni)
 
 ```
 ls /etc/cni/net.d

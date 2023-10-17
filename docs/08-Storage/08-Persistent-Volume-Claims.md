@@ -7,11 +7,35 @@ In this section, we will take a look at **Persistent Volume Claim**
 - Now we will create a Persistent Volume Claim to make the storage available to the node.
 - Volumes and Persistent Volume Claim are two separate objects in the Kubernetes namespace.
 - Once the Persistent Volume Claim created, Kubernetes binds the Persistent Volumes to claim based on the request and properties set on the volume.
+- Ogni persistentVolumeClaim è legato ad un PersistentVolume e questo avviene durante la fase di Binding, dove
+k8s prova a trovare il miglior match rispetto alla richiesta effettuata riguardo p.es.:
+- Capacity 
+- Access Mode
+- Volume Mode
+- Storage Class
 
+Si può sempre forzare un determinato volume, al volume claim, utilizzando la solita modalità di labels and selectors
+per esser sicuri che volume e volumeClaim matchino quando ci possono esser più possibili pv per un determinato pvc:
+
+Lato pvc utilizziamo 
+
+```
+selector:
+  matchLabels:
+    name: my-pv
+```
+
+lato pv:
+
+```
+labels: 
+  name: my-pv
+```
 
 ![class-17](../../images/class17.PNG)
 
-- If properties not matches or Persistent Volume is not available for the Persistent Volume Claim then it will display the pending state.
+- If properties not matches or Persistent Volume is not available for the Persistent Volume Claim then 
+it will display the pending state.
 
 ```
 pvc-definition.yaml
@@ -75,6 +99,11 @@ myclaim   Bound    pv-vol1   1Gi        RWO                           1min
 ```
 $ kubectl delete pvc myclaim
 ```
+
+A seconda di cosa c'è scritto nella property `persistentVolumeReclaimPolicy`, il volume è cancellato ugualmente o meno.
+Di **default** il valore è `Reclaim`, che fa si che il volume non è cancellato e non viene nemmeno bindato su un altro
+Pod. Ma p.es. con il valore `Delete`, viene automaticamente cancellato e con `Recycle` i dati son cancellati e il
+volume è reso disponibili ad altri Pod.
 
 #### Delete the Persistent Volume
 

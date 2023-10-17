@@ -4,6 +4,18 @@
 
 In this section, we will take a look at **DNS in the Linux**
 
+Differenza fra file `hosts` e `resolv.conf`
+
+`/etc/resolv.conf`: Lists nameservers that are used by your host for DNS resolution. 
+If you are using DHCP, this file is automatically populated with DNS record issued by DHCP server.
+`/etc/hosts/`: It is just a static lookup method for resolution. Il DNS non è coinvolto, è una risoluzione statica, anzi
+se tramite il comando `hostname`, il nome macchina destinazione fosse differente, per il chiamante, sarebbe trasparente.
+`/etc/nsswitch.conf`: It defined order of resolution. Who should it consult first for resolution, 
+a DNS or a host file? For example, if the file has following configuration hosts: `files dns` then /etc/hosts file will 
+be checked first for resolution, if domain is still un-resolvable, DNS will then be consulted.
+
+Questo è il modo in cui la macchina risolve i nomi, che sia per un comando di `ping`, `ssh`, `curl` ecc ecc
+
 ## Name Resolution 
 
 - With help of the `ping` command. Checking the reachability of the IP Addr on the Network.
@@ -46,13 +58,22 @@ $ curl http://web
 
 ## DNS
 
-- Every host has a DNS resolution configuration file at `/etc/resolv.conf`.
+Fondamentalmente si è partiti tramite file hosts, ma con il passare del tempo e la crescita dei sistemi, 
+ci si è resi conto che fosse troppo complesso, per cui si è passati  a spostare le entry sempre più lunghe
+nei file hosts, nei DNS Servers.
+
+- **Every host has a DNS resolution configuration file at `/etc/resolv.conf`**.
 
 ```
 $ cat /etc/resolv.conf
 nameserver 127.0.0.53
+nameserver 8.8.8.8
 options edns0
 ```
+
+In questo caso, il default DNS è `127.0.0.53`, quindi durante la risoluzione, una volta controllato 
+quanto presente sul file hosts, si passa a chiedere al DNS il nome dell'host (se il file nsswitch.conf non è 
+stato modificato)
 
 - To change the order of dns resolution, we need to do changes into the `/etc/nsswitch.conf` file.
 
@@ -90,11 +111,30 @@ PING github.com (140.82.121.3) 56(84) bytes of data.
 
 ## Domain Names
 
+Logicamente i DNS sono gerarchici, e risolvono i domini
+- top level domain (.com, .edu, ecc ecc)
+- domain name (google)
+- subdomain (maps, mail, maps, ecc ecc)
+
+![img.png](../../images/dns-resolution.png)
+
+Come vedi, c'è prima il DNS dell'organizzazione, che non conoscendo il nome, lo spara su internet al root DNS, che legge `.com `
+e lo gira al top-level-domain .com che leggendo il dominio `google`, lo gira al Google DNS che leggendo `apps` restituisce
+l'indirizzo corretto
+
 ![net-8](../../images/net8.PNG)
+
+
+
 
 ## Search Domain
 
-![net-9](../../images/net9.PNG)
+Idem è all'interno dell'organizzazione, così come fosse il Google DNS.
+
+Specificando nel resolv.conf `search mycompany.com`, **gli stiamo dicendo che, se non specificato il dominio, 
+il dominio di default è questo**, così possiamo risolvere web.mycompany.com, semplicemente tramite web.
+
+![img.png](../../images/search-domain.png)
 
 ## Record Types
 
@@ -105,6 +145,8 @@ PING github.com (140.82.121.3) 56(84) bytes of data.
 - Useful networking tools to test dns name resolution.
 
 #### nslookup 
+
+Query un hostname tramite la risoluzione DNS presente sulla macchina (ignora `/etc/hosts` file)
 
 ```
 $ nslookup www.google.com
@@ -118,6 +160,8 @@ Name:   www.google.com
 ```
 
 #### dig
+
+Sempre risoluzione DNS, fornisce più informazioni, più vicino a come viene memorizzata la info nel server DNS.
 
 ```
 $ dig www.google.com

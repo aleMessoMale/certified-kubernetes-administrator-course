@@ -4,6 +4,12 @@
 
 In this section, we will take a look at **Network Namespaces**
 
+Interessante che se hai un'interfaccia di rete, ci assegni un IP e lo aggiungi alla route table
+per connettere le reti.
+
+Le reti dell'host dei vari network namespaces son separate, si possono connettere tramte Bridge e 
+modifica delle routing table, associando le interfacce ad IP e modificando le routing tables.
+
 
 ## Process Namespace
 
@@ -18,6 +24,11 @@ $ ps aux
 
 ```
 
+![img.png](../../images/network-namespaces.png)
+
+E' lo stesso processo, solo associato a differenti PID. All'interno del container, vedo solo quel processo,
+nell'host, come root, li vedo tutti
+
 ## Network Namespace
 
 ```
@@ -28,7 +39,13 @@ $ route
 $ arp
 ```
 
+![img.png](../../images/network-namespaces-1.png)
+
+**Come vedi, il container ha le sue network interfaces, routing table e ARP Table, non vede quelle dell'host.**
+
 ## Create Network Namespace
+
+Questo è quello che avviene quando creiamo un Container, creiamo un nuovo network namespace.
 
 ```
 $ ip netns add red
@@ -49,7 +66,8 @@ $ ip netns
 $ ip link
 ```
 
-- Exec inside the network namespace
+**- Exec inside the network namespace the ip link command, prefixed  by `ip netns exec <network-namespace>`**
+  - questo vale anche per altri comandi, come arp, p.es.
 
 ```
 $ ip netns exec red ip link
@@ -68,6 +86,12 @@ $ ip -n red link
 ```
 
 ## ARP and Routing Table
+
+Le tabelle ARP, son le tabelle di connessione dell'indirizzo IP con l'indirizzo di rete, di livello 2.
+Anche queste son separate fra container e host.
+- eseguiamo sempre il command con `ip netns exec <network-namespace> <command>`
+
+Il comando route, naturalmente restituisce le tabelle di routing
 
 > On the host
 ```
@@ -104,11 +128,14 @@ Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
 
 ## Virtual Cable
 
-- To create a virtual cable
+Tramite un virtual cable, siamo in grado di connettere due reti virtuali o network namespace
+
+- To create a virtual cable e connettere quindi le due reti, creiamo i due ingressi (veth-red e veth-blue)
 ```
 $ ip link add veth-red type veth peer name veth-blue
 ```
 
+- Quello che dobbiamo poi fare è assegnare veth-blue e veth-red ai due network namespaces.
 - To attach with the network namespaces
 ```
 $ ip link set veth-red netns red
@@ -116,7 +143,7 @@ $ ip link set veth-red netns red
 $ ip link set veth-blue netns blue
 ```
 
-- To add an IP address
+- Assegniamo quindi un indirizzo IP alle interfacce all'interno del network namespace. To add an IP address
 ```
 $ ip -n red addr add 192.168.15.1/24 dev veth-red
 
@@ -147,6 +174,10 @@ Address                  HWtype  HWaddress           Flags Mask            Iface
 
 ```
 
+![img.png](../../images/virtual-cable.png)
+
+Chiaramente i virtual cable, le connessioni effettuate fra network namespaces, sono trasparenti per l'host.
+
 - Delete the link.
 ```
 $ ip -n red link del veth-red
@@ -165,6 +196,9 @@ Address                  HWtype  HWaddress           Flags Mask            Iface
 
 ## Linux Bridge
 
+Con questa soluzione, possiamo far comunicare diverse network namespaces insieme, non solo 2, è in pratica
+un brigde per far parlare diverse reti.
+
 - Create a network namespace
 
 ```
@@ -172,7 +206,7 @@ $ ip netns add red
 
 $ ip netns add blue
 ``` 
-- To create a internal virtual bridge network, we add a new interface to the host
+- To create a internal virtual bridge network, we add a new interface to the host, lo chiamiamo `v-net-0`
 ```
 $ ip link add v-net-0 type bridge
 ```
@@ -186,13 +220,14 @@ $ ip link
 ```
 $ ip link set dev v-net-0 up
 ```
-- To connect network namespace to the bridge. Creating a virtual cabel
+- To connect network namespace to the bridge. Creating a virtual cable (come naming convention, un lato 
+lo chiamiamo veth-red e **all'altro lato, gli aggiungiamo -br, per ricordarci che è un bridge **)
 ```
 $ ip link add veth-red type veth peer name veth-red-br
 
 $ ip link add veth-blue type veth peer name veth-blue-br
 ```
-- Set with the network namespaces
+- Set with the network namespaces, aggiungiamo i cavi ai namespaces
 ```
 $ ip link set veth-red netns red
 
@@ -213,18 +248,16 @@ $ ip -n blue addr add 192.168.15.2/24 dev veth-blue
 $ ip -n red link set veth-red up
 
 $ ip -n blue link set veth-blue up
-```
-- To add an IP address
-```
-$ ip addr add 192.168.15.5/24 dev v-net-0
-```
-- Turn it up added interfaces on the host
-```
-$ ip link set dev veth-red-br up
-$ ip link set dev veth-blue-br up
+
 ```
 
-> On the host
+Arriviamo quindi a questa topologia (facendo anche per le altre network namespaces):
+
+![img.png](../../images/network-namespaces-bridge.png)
+
+Il mio host è su una rete e le network namespaces son su un'altra network.
+
+> On the host (not able to connect) 
 ```
 $ ping 192.168.15.1
 ```
@@ -238,9 +271,34 @@ $ ip netns exec blue route
 
 $ ip netns exec blue ip route add 192.168.1.0/24 via 192.168.15.5
 
-# Check the IP Address of the host
-$ ip a
+```
 
+Volendo le possiamo connettere, possiamo connettere il brigde, che è un'interfaccia di rete, con la rete dell'host, 
+dando un indirizzo IP all'interfaccia del bridge: 
+
+```
+$ ip addr add 192.168.15.5/24 dev v-net-0
+
+```
+e siamo in grado di pingare dall'host uno dei network namespaces: 
+
+```
+$ ping 192.168.15.1
+```
+
+Possiamo anche far si che la network namespace comunichi, tramite la v-net-0, il bridge 192.168.15.5, 
+con il mondo esterno, con la rete dell'host, gestendo la route table
+```
+ip netns exec blue ip route add 192.168.1.0/24 via 192.168.15.5
+```
+
+![img.png](../../images/network-namespaces-3.png)
+
+A questo punto siamo in grado di pingare, senza ricevere risposte, per questo
+dobbiamo attivare il nat, per far si che chiunque riceva i nostri pacchetti pensi che stiamo inviando i 
+pacchetti dalla rete dell'host e non dal network namespaces
+
+```
 $ ip netns exec blue ping 192.168.1.1
 PING 192.168.1.1 (192.168.1.1) 56(84) bytes of data.
 
@@ -252,6 +310,7 @@ $ ip netns exec blue ping 8.8.8.8
 
 $ ip netns exec blue route
 
+# questo ci permette fondamentalmente di raggiungere p.es. il DNS di google e ogni indirizzo che l'host raggiunge
 $ ip netns exec blue ip route add default via 192.168.15.5
 
 $ ip netns exec blue ping 8.8.8.8
