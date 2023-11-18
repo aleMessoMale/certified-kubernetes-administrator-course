@@ -13,15 +13,17 @@
     ![app](../../images/app.PNG)
 
   - To check the endpoint of the service and compare it with the selectors
+    - ossia, controlla le labels del pod e verifica che corrispondano con quelle su cui il service
+    utilizza il selector
 
-    ```
-    kubectl describe service web-service
-    ```   
+      ```
+      kubectl describe service web-service
+      ```   
 
-    ![svc](../../images/svc.PNG)
+      ![svc](../../images/svc.PNG)
 
 
-  - To check the status and logs of the pod
+  - To check the status and logs of the pod (se ci son tanti restart p.es. o se non è Running)
 
     ```
     kubectl get pod
@@ -35,6 +37,12 @@
     kubectl logs web
     ```
 
+  - Per stare in tail sui logs: 
+
+    ```
+    kubectl logs web -f 
+    ```
+    
   - To check the logs of the previous pod
 
     ```

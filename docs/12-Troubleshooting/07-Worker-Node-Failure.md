@@ -13,20 +13,24 @@
     ```
     kubectl describe node worker-1
     ```
+    
+    Ci sono i vari flag per saturazione disco, saturazione memoria centrale, livello critico di quantità di disco
+    libero o numero di processi troppo alto.
 
-    ![wrk](../../images/wrk.PNG)
+    Inoltre, se il worker non è in grado di comunicare con il master, lo stato del nodo è unknowkn.
+
+    ![img.png](describe-no-k8s.png)
 
 
   - Check the possible **`CPU`** and **`MEMORY`**  using **`top`** and **`df -h`** 
 
- 
-    ![mem](../../images/mem.PNG)
+    ![img.png](mem.png)
 
 
   - Check the status and the logs of the **`kubelet`** for the possible issues.
 
     ```
-    serivce kubelet status
+    service kubelet status
     ```
 
     ```

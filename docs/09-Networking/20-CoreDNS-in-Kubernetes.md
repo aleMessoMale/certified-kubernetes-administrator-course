@@ -7,7 +7,7 @@ In this section, we will take a look at **CoreDNS in the Kubernetes**
 ossia vediamo come k8s implementa i DNS Service.
 
 Ad oggi il server DNS suggerito per k8s si chiama CoreDNS ed è deployato come Pod nel kube-system namespace
-con il nome kube-dns.
+con il nome coredns.
 Esegue un eseguibile, che sarebbe lo stesso che eseguiremmo se dovessimo eseguire installare noi CoreDNS
 come servizio.
 

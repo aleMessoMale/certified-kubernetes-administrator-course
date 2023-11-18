@@ -264,3 +264,7 @@ then to `kubenode02`
     * Paste the `kubeadm join` command from above step to the command prompt and enter it.
 
     </details>
+   
+
+kubeadm join 172.25.0.48:6443 --token miy88v.7g5m5jzahzmmdxnh \
+        --discovery-token-ca-cert-hash sha256:f09a42ea1affdc47c44b3451fffcedb9afb849b768604bc29272bc548a7ddbfa 
